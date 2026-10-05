@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Evidence-linked tracker of climate-disaster risk financing initiatives involving UN-listed Small Island Developing States.">
+  <meta name="theme-color" content="#102f38">
+  <title>SIDS Climate Finance Tracker</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17343a;
+      --muted: #5d7375;
+      --paper: #f4f6f2;
+      --white: #fff;
+      --line: #dce5df;
+      --teal: #11665d;
+      --teal-dark: #0b4d47;
+      --mint: #dceee6;
+      --coral: #bf6248;
+      --sand: #f2e8d8;
+      --shadow: 0 16px 40px rgb(19 52 58 / 8%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); }
+    button, input, select { font: inherit; }
+    button, a, select { -webkit-tap-highlight-color: transparent; }
+    a { color: var(--teal-dark); }
+    .topbar { background: var(--ink); color: white; }
+    .topbar-inner { max-width: 1440px; margin: auto; min-height: 52px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: 12px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .02em; }
+    .brand-mark { width: 10px; height: 10px; border-radius: 50%; background: #83d0ae; box-shadow: 0 0 0 5px rgb(131 208 174 / 14%); }
+    .topnote { color: #c7d7d3; }
+    main { max-width: 1440px; margin: auto; padding: 42px 32px 64px; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 330px); gap: 32px; align-items: end; margin-bottom: 30px; }
+    .eyebrow { color: var(--teal); font-size: 11px; letter-spacing: .15em; text-transform: uppercase; font-weight: 800; }
+    h1 { max-width: 800px; margin: 11px 0 12px; font-family: Georgia, "Times New Roman", serif; font-weight: 500; letter-spacing: -.035em; font-size: clamp(36px, 5.3vw, 66px); line-height: .99; }
+    .lede { max-width: 770px; margin: 0; color: var(--muted); line-height: 1.65; font-size: 15px; }
+    .scope-card { padding: 19px 20px; border: 1px solid var(--line); border-radius: 15px; background: var(--white); box-shadow: var(--shadow); }
+    .scope-card strong { display: block; margin-bottom: 7px; font-size: 13px; }
+    .scope-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .scope-card a { display: inline-block; margin-top: 11px; font-size: 12px; font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .review-banner { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 22px; border: 1px solid #e6d2aa; border-radius: 12px; padding: 14px 16px; color: #5e4a2c; background: #fff9eb; font-size: 12px; line-height: 1.5; }
+    .review-banner strong { color: #493819; }
+    .review-icon { flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: #f2e3bf; font-weight: 800; }
+    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .metric { min-height: 110px; padding: 18px 19px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+    .metric-label { color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-size: 10px; font-weight: 800; }
+    .metric-value { margin-top: 12px; font-family: Georgia, "Times New Roman", serif; font-size: clamp(25px, 3vw, 36px); letter-spacing: -.04em; }
+    .metric-foot { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .workspace { border: 1px solid var(--line); border-radius: 17px; background: var(--white); box-shadow: var(--shadow); overflow: hidden; }
+    .workspace-head { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 21px 23px 17px; border-bottom: 1px solid var(--line); }
+    .workspace-head h2 { margin: 0 0 5px; font-family: Georgia, "Times New Roman", serif; font-size: 24px; font-weight: 500; letter-spacing: -.02em; }
+    .workspace-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .head-actions { display: flex; gap: 8px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 13px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: white; text-decoration: none; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .button:hover { border-color: #9ab9ad; background: #f7faf7; }
+    .button.primary { color: white; border-color: var(--teal); background: var(--teal); }
+    .filters { display: grid; grid-template-columns: minmax(220px, 1.7fr) repeat(4, minmax(125px, 1fr)); gap: 10px; padding: 15px 22px; border-bottom: 1px solid var(--line); background: #fbfcfa; }
+    .control { width: 100%; min-height: 39px; padding: 0 10px; border: 1px solid #d7e1db; border-radius: 7px; color: var(--ink); background: white; font-size: 12px; }
+    .control:focus, .button:focus-visible, th button:focus-visible, .close:focus-visible { outline: 3px solid #98cfb7; outline-offset: 2px; }
+    .filter-search { position: relative; }
+    .filter-search span { position: absolute; top: 10px; left: 11px; color: var(--muted); font-size: 14px; }
+    .filter-search input { padding-left: 32px; }
+    .table-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 22px; color: var(--muted); font-size: 11px; }
+    .table-tools { display: flex; align-items: center; gap: 7px; }
+    .table-tools label { color: var(--muted); white-space: nowrap; }
+    .table-tools .control { min-height: 32px; width: auto; max-width: 260px; }
+    details.advanced-filters { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 9px; }
+    details.advanced-filters summary { width: fit-content; color: var(--teal-dark); font-size: 11px; font-weight: 750; cursor: pointer; }
+    .advanced-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; padding-top: 11px; }
+    .advanced-grid label { display: grid; gap: 5px; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; min-width: 1770px; table-layout: fixed; border-collapse: collapse; text-align: left; }
+    th:nth-child(1), td:nth-child(1) { width: 70px; }
+    th:nth-child(2), td:nth-child(2) { width: 200px; }
+    th:nth-child(3), td:nth-child(3) { width: 230px; }
+    th:nth-child(4), td:nth-child(4) { width: 150px; }
+    th:nth-child(5), td:nth-child(5) { width: 220px; }
+    th:nth-child(6), td:nth-child(6) { width: 170px; }
+    th:nth-child(7), td:nth-child(7) { width: 160px; }
+    th:nth-child(8), td:nth-child(8) { width: 210px; }
+    th:nth-child(9), td:nth-child(9) { width: 140px; }
+    th:nth-child(10), td:nth-child(10) { width: 220px; }
+    thead { background: #f5f8f5; }
+    th { padding: 11px 13px; color: #647878; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+    th button { padding: 0; border: 0; color: inherit; background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+    th button:hover { color: var(--teal-dark); }
+    td { padding: 15px 13px; border-top: 1px solid #edf1ed; vertical-align: top; font-size: 12px; }
+    tr.project-row { cursor: pointer; }
+    tr.project-row:hover { background: #f8fbf8; }
+    .project-name { display: block; max-width: 320px; color: var(--ink); font-weight: 750; line-height: 1.4; }
+    .project-sub { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 5px; max-width: 220px; }
+    .tag { display: inline-flex; align-items: center; padding: 5px 7px; border-radius: 5px; background: var(--mint); color: #20584f; font-size: 10px; line-height: 1.15; }
+    .tag.neutral { background: #eef1ed; color: #586968; }
+    .tag.status { background: #fff1d6; color: #73552a; }
+    .amount { white-space: nowrap; font-weight: 700; }
+    .reach { display: block; color: var(--ink); }
+    .reach + small { display: block; max-width: 175px; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+    .empty { padding: 42px 20px; text-align: center; color: var(--muted); font-size: 13px; }
+    .below-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+    .info-card { padding: 19px 21px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+    .info-card h3 { margin: 0 0 13px; font-family: Georgia, "Times New Roman", serif; font-size: 20px; font-weight: 500; }
+    .bars { display: grid; gap: 10px; }
+    .bar-row { display: grid; grid-template-columns: 105px minmax(30px, 1fr) 24px; gap: 9px; align-items: center; font-size: 11px; }
+    .bar-label { color: var(--muted); }
+    .bar-track { height: 7px; border-radius: 9px; background: #edf2ee; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: inherit; background: #63a88c; }
+    .bar-value { text-align: right; font-weight: 700; }
+    .note-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+    .note-list li { display: flex; gap: 9px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .note-list li::before { content: "•"; color: var(--coral); font-size: 16px; line-height: 12px; }
+    footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 23px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    footer a { color: var(--muted); }
+    dialog { width: min(780px, calc(100% - 28px)); max-height: min(88vh, 900px); padding: 0; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); box-shadow: 0 24px 90px rgb(10 35 38 / 28%); }
+    dialog::backdrop { background: rgb(12 34 38 / 56%); backdrop-filter: blur(3px); }
+    .detail-head { display: flex; justify-content: space-between; gap: 20px; padding: 24px 26px 18px; border-bottom: 1px solid var(--line); background: #f9fbf8; }
+    .detail-head h2 { margin: 7px 0 7px; font-family: Georgia, "Times New Roman", serif; font-weight: 500; font-size: 29px; line-height: 1.1; }
+    .detail-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .close { width: 34px; height: 34px; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: white; font-size: 20px; cursor: pointer; }
+    .detail-body { padding: 21px 26px 28px; overflow-y: auto; }
+    .detail-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 19px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px 22px; }
+    .detail-item.wide { grid-column: 1 / -1; }
+    .detail-label { margin-bottom: 5px; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+    .detail-value { font-size: 12px; line-height: 1.6; white-space: pre-line; }
+    .source-list { display: grid; gap: 8px; margin: 8px 0 0; padding-left: 17px; }
+    .source-list a { font-size: 12px; font-weight: 700; }
+    .source-list small { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-weight: 400; }
+    .detail-caveat { margin-top: 19px; padding: 12px 13px; border-radius: 8px; background: #fff8e9; color: #6c5731; font-size: 11px; line-height: 1.5; }
+    @media (max-width: 1050px) {
+      .filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .filter-search { grid-column: span 2; }
+      .advanced-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 720px) {
+      .topbar-inner { padding: 0 18px; }
+      .topnote { display: none; }
+      main { padding: 28px 16px 40px; }
+      .hero { grid-template-columns: 1fr; gap: 19px; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .metric { min-height: 95px; padding: 14px; }
+      .workspace-head { align-items: flex-start; padding: 18px 16px 15px; }
+      .head-actions { flex-direction: column; }
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 12px; }
+      .filter-search { grid-column: span 2; }
+      .table-meta { align-items: flex-start; flex-direction: column; padding: 11px 13px; }
+      .table-tools { width: 100%; }
+      .table-tools .control { max-width: none; flex: 1; }
+      .advanced-grid { grid-template-columns: 1fr 1fr; }
+      .below-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+      .detail-head { padding: 19px 18px 15px; }
+      .detail-body { padding: 18px; }
+      .detail-grid { grid-template-columns: 1fr; gap: 13px; }
+      .detail-item.wide { grid-column: auto; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .workspace, .metric { transition: box-shadow .2s ease, transform .2s ease; }
+      .metric:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>ISLAND RESILIENCE FINANCE OBSERVATORY</span></div>
+      <div class="topnote">Evidence-led tracker · 2020 onwards</div>
+    </div>
+  </div>
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <div class="eyebrow">Climate risk · Finance · Small islands</div>
+        <h1 id="page-title">How is resilience<br>being financed?</h1>
+        <p class="lede">An evidence-linked view of climate-disaster risk financing and de-risking initiatives involving UN-listed Small Island Developing States. Compare mechanisms, partners, timing, and disclosed reach—without mistaking a promise for a payout.</p>
+      </div>
+      <aside class="scope-card">
+        <strong>Scope follows the UN SIDS roster</strong>
+        <p>39 States and 18 Associate Members across the Caribbean, Pacific, and Atlantic, Indian Ocean and South China Sea (AIS). Initiative coverage begins in 2020.</p>
+        <a href="https://www.un.org/ohrlls/content/list-sids" target="_blank" rel="noopener noreferrer">View UN-OHRLLS membership ↗</a>
+      </aside>
+    </section>
+
+    <div class="review-banner" role="note">
+      <span class="review-icon" aria-hidden="true">!</span>
+      <div><strong>Research prototype · Candidate records only.</strong> This is not a comprehensive inventory, and entries have not completed independent double-coding. A region tag does not prove that a named UN-listed SIDS is a beneficiary; review each record's eligibility note. Amounts, dates, country roles, and reach are shown only as supported by linked sources; “Not disclosed” is not zero.</div>
+    </div>
+
+    <section class="metrics" aria-label="Filtered catalogue summary">
+      <article class="metric"><div class="metric-label">Records in view</div><div class="metric-value" id="metric-count">—</div><div class="metric-foot">Pilot records; not all eligibility-verified</div></article>
+      <article class="metric"><div class="metric-label">Candidate regions tagged</div><div class="metric-value" id="metric-regions">—</div><div class="metric-foot">UN SIDS beneficiary presence may be unverified</div></article>
+      <article class="metric"><div class="metric-label">Finance amounts disclosed</div><div class="metric-value" id="metric-amounts">—</div><div class="metric-foot">Amount and funding concept specified</div></article>
+      <article class="metric"><div class="metric-label">Reach not disclosed</div><div class="metric-value" id="metric-reach">—</div><div class="metric-foot">Individual/community counts</div></article>
+    </section>
+
+    <section class="workspace" aria-labelledby="catalogue-title">
+      <header class="workspace-head">
+        <div><h2 id="catalogue-title">Initiative catalogue</h2><p>Filter, sort, export, or open any row to inspect the evidence. Scroll horizontally for all fields.</p></div>
+        <div class="head-actions">
+          <button type="button" class="button" id="reset-button">Reset filters</button>
+          <button type="button" class="button" id="codebook-button">Codebook JSON</button>
+          <button type="button" class="button primary" id="export-button">Export view CSV ↓</button>
+        </div>
+      </header>
+      <div class="filters" aria-label="Catalogue filters">
+        <label class="filter-search"><span aria-hidden="true">⌕</span><input class="control" type="search" id="search" placeholder="Search projects, places, partners…" aria-label="Search initiatives"></label>
+        <select class="control" id="year-filter" aria-label="Filter by year"><option value="">All years</option></select>
+        <select class="control" id="region-filter" aria-label="Filter by SIDS region"><option value="">All SIDS regions</option></select>
+        <select class="control" id="mechanism-filter" aria-label="Filter by finance mechanism"><option value="">All mechanisms</option></select>
+        <select class="control" id="type-filter" aria-label="Filter by initiative type"><option value="">All initiative types</option></select>
+        <select class="control" id="status-filter" aria-label="Filter by project status"><option value="">All statuses</option></select>
+        <details class="advanced-filters">
+          <summary>Countries, partners, reach, and amount filters</summary>
+          <div class="advanced-grid">
+            <label>Country / jurisdiction<select class="control" id="country-filter"><option value="">All countries</option></select></label>
+            <label>Country grouping<select class="control" id="country-group-filter"><option value="">All groupings</option></select></label>
+            <label>Organization<select class="control" id="organization-filter"><option value="">All organizations</option></select></label>
+            <label>Organization type<select class="control" id="organization-type-filter"><option value="">All organization types</option></select></label>
+            <label>Organization role<select class="control" id="organization-role-filter"><option value="">All organization roles</option></select></label>
+            <label>SIDS membership status<select class="control" id="membership-status-filter"><option value="">All membership statuses</option></select></label>
+            <label>Review status<select class="control" id="review-status-filter"><option value="">All review statuses</option></select></label>
+            <label>Source publisher<select class="control" id="source-publisher-filter"><option value="">All source publishers</option></select></label>
+            <label>Reach disclosure<select class="control" id="reach-filter"><option value="">All reach disclosures</option></select></label>
+            <label>Amount disclosure<select class="control" id="amount-filter"><option value="">All amount disclosures</option></select></label>
+          </div>
+        </details>
+      </div>
+      <div class="table-meta">
+        <span id="result-count" aria-live="polite"></span>
+        <div class="table-tools"><label for="sort-filter">Sort by</label><select class="control" id="sort-filter" aria-label="Sort initiatives by">
+          <option value="year">Qualifying year</option><option value="name">Initiative name</option><option value="countriesText">Countries / region</option><option value="countryRolesText">Country roles</option><option value="sidsEligibility">SIDS eligibility</option><option value="membershipStatus">SIDS membership status</option><option value="countryGroupText">Country grouping</option><option value="orgNames">Organizations</option><option value="orgTypes">Organization type</option><option value="orgRoles">Organization role</option><option value="mechanismText">Finance mechanism</option><option value="typesText">Initiative type</option><option value="status">Funding status</option><option value="editorialStatus">Review status</option><option value="qualifyingEvent">Qualifying event</option><option value="timingSort">Funding timing</option><option value="amountSort">Finance amount</option><option value="amountConcept">Amount concept</option><option value="reachSort">Reach value</option><option value="reachDisclosure">Reach disclosure</option><option value="reachSummary">Reach description</option><option value="sourcePublishers">Source publisher</option><option value="importance">Importance / rationale</option><option value="description">Project description</option><option value="lastVerified">Last verified</option>
+        </select><button type="button" class="button" id="direction-button" aria-label="Change sort direction">↓</button></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th scope="col"><button data-sort="year">Year ↕</button></th>
+            <th scope="col"><button data-sort="name">Initiative ↕</button></th>
+            <th scope="col"><button data-sort="countriesText">SIDS country / region ↕</button></th>
+            <th scope="col"><button data-sort="countryGroupText">Country grouping ↕</button></th>
+            <th scope="col"><button data-sort="orgNames">Organizations ↕</button></th>
+            <th scope="col"><button data-sort="mechanismText">Finance mechanism ↕</button></th>
+            <th scope="col"><button data-sort="typesText">Initiative type ↕</button></th>
+            <th scope="col"><button data-sort="status">Funding status ↕</button></th>
+            <th scope="col"><button data-sort="amountSort">Reported finance ↕</button></th>
+            <th scope="col"><button data-sort="reachSort">Documented reach ↕</button></th>
+          </tr></thead>
+          <tbody id="project-rows"></tbody>
+        </table>
+        <div id="empty-state" class="empty" hidden>No initiatives match these filters. Try clearing one or more filters.</div>
+      </div>
+    </section>
+
+    <section class="below-grid" aria-label="Catalogue breakdowns and reading guide">
+      <article class="info-card">
+        <h3>Summarize this view</h3>
+        <label class="detail-label" for="summary-filter">Count records by</label>
+        <select class="control" id="summary-filter" aria-label="Summarize records by" style="margin:0 0 12px">
+          <option value="mechanisms">Financing mechanism</option><option value="year">Qualifying year</option><option value="regions">SIDS region tag</option><option value="membershipStatus">SIDS membership status</option><option value="countryGroup">Country grouping</option><option value="organizations">Organization</option><option value="organizationTypes">Organization type</option><option value="organizationRoles">Organization role</option><option value="types">Initiative type</option><option value="status">Funding status</option><option value="editorialStatus">Review status</option><option value="sourcePublishers">Source publisher</option><option value="timing">Funding timing</option><option value="amountConcept">Finance amount concept</option><option value="amountDisclosure">Amount disclosure</option><option value="reachDisclosure">Reach disclosure</option><option value="reachSummary">Reach description</option>
+        </select>
+        <div class="bars" id="mechanism-bars"></div>
+        <p class="project-sub">Counts include the filtered records. Multi-tagged initiatives appear in each matching category; category counts may add up to more than the record total.</p>
+      </article>
+      <article class="info-card">
+        <h3>Read the numbers carefully</h3>
+        <ul class="note-list">
+          <li>A loan commitment, project cost, insurance coverage, guarantee ceiling, and payout are different financial concepts.</li>
+          <li>Reach may mean a target, an estimate, people covered, or people actually reached. The evidence type is shown in each record.</li>
+          <li>Country and organization roles are reported separately. A named contractor is not automatically a financier.</li>
+          <li>Regional and financial totals reflect only records currently visible; facilities and subprojects may overlap.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      <span>Coverage: initiatives with a qualifying public event dated 2020 or later. UN-OHRLLS region labels govern SIDS geography.</span>
+      <span>Prototype for research and human review · Scope and data limitations are described above and in the project repository.</span>
+    </footer>
+  </main>
+  <dialog id="detail-dialog" aria-labelledby="detail-title">
+    <div id="detail-content"></div>
+  </dialog>
+  <script>
+    "use strict";
+
+    // Pilot seed record; the cited CCRIF page reports seven member countries but does not name them or disclose a funding amount.
+    const projects = [
+      {
+        id: "ccrif-cacaf-coverage-2024",
+        name: "Canada-CARICOM Climate Adaptation Fund support for CCRIF coverage",
+        year: 2024,
+        qualifyingEvent: "CCRIF reports that it received funding in 2024 to help seven members increase coverage.",
+        regions: ["Caribbean"],
+        membershipBasis: "Potential Caribbean relevance only; the funding notice does not identify whether a UN-listed SIDS State or Associate Member is among the seven members.",
+        membershipStatus: "Not confirmed",
+        sidsEligibility: "Unverified — named covered SIDS jurisdictions not disclosed",
+        countriesText: "Caribbean (seven CCRIF members; country names not disclosed in cited notice)",
+        mechanisms: ["Not disclosed", "Regional risk pool / pooled insurance"],
+        mechanismText: "CCRIF documents funding to support increased coverage; the funding instrument and terms are not specified in the cited notice. CCRIF coverage operates through a regional risk pool.",
+        types: ["Adaptation", "Risk pooling", "Pre-arranged finance", "Shock-responsive social protection"],
+        typesText: "Adaptation · Risk pooling · Pre-arranged finance",
+        status: "Funding reported",
+        statusDetail: "CCRIF reports receipt of funding in 2024. The source does not disclose the funding instrument, amount, contract date, or individual member allocation.",
+        timing: "Funding received in 2024 (year-level precision).",
+        timingSort: "2024",
+        amountDisplay: "Not disclosed",
+        amountSort: null,
+        amountCurrency: null,
+        amountConcept: "Funding amount / member allocations not disclosed on the cited page.",
+        amountDisclosure: "Not disclosed",
+        countries: [],
+        countryDisclosure: "Country names not disclosed",
+        countryGroup: "Not classified",
+        countryGroupText: "Not classified — jurisdictions not named",
+        countryGroupMethod: "Not assigned — covered countries are not named; no Global North/Global South classification applied.",
+        organizations: [
+          { name: "Caribbean Development Bank (CDB)", type: "Multilateral development bank", role: "Funding channel/provider; source says support came through CDB." },
+          { name: "Canada-CARICOM Climate Adaptation Fund", type: "Climate adaptation fund", role: "Source identifies this fund as the funding source." },
+          { name: "CCRIF SPC", type: "Regional risk pool", role: "Insurance facility; enabled seven members to increase coverage." }
+        ],
+        countriesInvolved: "No individual member countries are named in the cited funding notice. It therefore cannot confirm which, if any, covered jurisdictions are UN-listed SIDS. The financial/company roles of private entities are not disclosed there.",
+        countryRolesText: "No individual member countries named; covered jurisdictions and their roles unverified.",
+        description: "In 2024, CCRIF received funding from CDB through the Canada-CARICOM Climate Adaptation Fund. CCRIF says the support enabled seven members to increase their coverage and make national social protection systems more shock responsive.",
+        importance: "The stated purpose links sovereign disaster-risk coverage with the ability of national social-protection systems to respond to shocks. The source describes intended system-level support; it does not quantify resulting household benefits or prove outcomes.",
+        riskLink: ["Climate-related disaster risk", "Multi-hazard (facility-level)"],
+        reachValue: null,
+        reachSort: null,
+        reachUnit: "Individual/community members not disclosed",
+        supportedMemberCount: 7,
+        supportedMemberUnit: "CCRIF member countries (member names not disclosed)",
+        reachDisclosure: "Not disclosed",
+        reachSummary: "Seven CCRIF member countries supported to increase coverage; country names not identified in this notice. No individual or community beneficiary count is disclosed.",
+        reachEvidence: "Member-country coverage support (not an individual beneficiary count; notice does not specify whether the figure is target or completed coverage increase).",
+        sourcePublishers: ["CCRIF SPC", "United Nations"],
+        links: [
+          { title: "CCRIF — official site and 2024 funding description", publisher: "CCRIF SPC", date: "Live page; publication date not stated", url: "https://www.ccrif.org/", supports: "2024 CDB / Canada-CARICOM Climate Adaptation Fund support; seven members; purpose for coverage and social protection." },
+          { title: "UN-OHRLLS — List of SIDS", publisher: "United Nations", date: "Live roster; publication date not stated", url: "https://www.un.org/ohrlls/content/list-sids", supports: "Authoritative SIDS membership roster for inclusion review." },
+          { title: "UN-OHRLLS — About SIDS", publisher: "United Nations", date: "Live page; publication date not stated", url: "https://www.un.org/ohrlls/content/about-small-island-developing-states", supports: "SIDS definition and the Caribbean, Pacific, and AIS regions." }
+        ],
+        lastVerified: "2026-09-29",
+        editorialStatus: "Candidate — eligibility unverified",
+        caveat: "Research candidate only; it does not yet meet verified SIDS-involvement criteria. The CCRIF homepage is dynamic and the specific funding statement should be located and archived in a future evidence pass. Seven members are not necessarily all SIDS States; beneficiary names are not provided, so confirm a UN-listed beneficiary before counting this as an in-scope SIDS initiative. Amount and individual reach remain undisclosed."
+      }
+    ];
+
+    const byId = (id) => document.getElementById(id);
+    const filterIds = [
+      "search", "year-filter", "region-filter", "mechanism-filter", "type-filter", "status-filter",
+      "country-filter", "country-group-filter", "organization-filter", "organization-type-filter",
+      "organization-role-filter", "membership-status-filter", "review-status-filter",
+      "source-publisher-filter", "reach-filter", "amount-filter"
+    ];
+    const controls = filterIds.map(byId);
+    let sortKey = "year";
+    let sortDirection = "desc";
+    let visibleProjects = [];
+    const csvHeaders = [
+      "initiative_id", "name", "year", "qualifying_event", "sids_region_tag", "countries",
+      "membership_basis", "membership_status", "sids_eligibility", "country_roles",
+      "country_grouping", "country_group_note", "country_group_method", "mechanisms",
+      "initiative_types", "funding_status", "status_detail", "reported_amount",
+      "amount_currency", "amount_concept", "funding_timing", "organizations_and_roles",
+      "description", "importance", "climate_risk_link", "reach_disclosure", "reach_summary",
+      "reach_evidence", "coverage_member_count", "coverage_member_unit", "top_links",
+      "source_publishers", "top_source_dates", "last_verified", "editorial_status", "evidence_caveat"
+    ];
+    const fieldDescriptions = {
+      initiative_id: "Stable identifier for this initiative record.",
+      name: "Source-backed initiative or candidate name.",
+      year: "Year of the qualifying public event; not necessarily project start year.",
+      qualifying_event: "Event and date basis for the 2020-onward inclusion rule.",
+      sids_region_tag: "UN-OHRLLS SIDS region tag; a tag alone does not prove a covered SIDS beneficiary.",
+      countries: "Named jurisdictions or explicit source-based disclosure note.",
+      membership_basis: "Evidence note for State/Associate Member inclusion.",
+      membership_status: "Whether UN SIDS membership/beneficiary status is confirmed.",
+      sids_eligibility: "Record-level evidence status for involvement of a UN-listed SIDS.",
+      country_roles: "Country participation/beneficiary role and disclosure caveat.",
+      country_grouping: "Global North/South classification, or Not classified.",
+      country_group_note: "Why a country grouping is absent or qualified.",
+      country_group_method: "Classification framework/version or reason not assigned.",
+      mechanisms: "Financing and risk-transfer mechanism tags; Not disclosed is not a grant.",
+      initiative_types: "Documented project activity/purpose tags.",
+      funding_status: "Reported financing stage/status; see status_detail.",
+      status_detail: "Evidence and qualification for funding status.",
+      reported_amount: "Reported amount or Not disclosed; not a computed total.",
+      amount_currency: "Reported currency, if disclosed.",
+      amount_concept: "Meaning of amount, such as commitment, cost, coverage, ceiling, or payout.",
+      funding_timing: "Documented funding date/stage with date precision preserved.",
+      organizations_and_roles: "Named organizations, types, and evidenced roles.",
+      description: "Neutral description of documented activity.",
+      importance: "Attributed rationale or stated significance; not an impact evaluation.",
+      climate_risk_link: "Documented climate-risk or climate-action relationship.",
+      reach_disclosure: "Disclosure status for individual/community reach.",
+      reach_summary: "Reach statement; distinguishes people from covered member countries.",
+      reach_evidence: "Evidence type/qualifier; do not equate target, coverage, and actual reach.",
+      coverage_member_count: "Member-country count if stated; not a people/households total.",
+      coverage_member_unit: "Unit and limitations for coverage_member_count.",
+      top_links: "Up to three selected evidence links.",
+      source_publishers: "Publishers of the selected evidence links.",
+      top_source_dates: "Publication-date status for selected links.",
+      last_verified: "Date this record's sources were checked.",
+      editorial_status: "Research/review status, distinct from funding status.",
+      evidence_caveat: "Open questions, source limitations, and non-inference notes."
+    };
+
+    function unique(values) {
+      return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+    }
+    function addOptions(id, values) {
+      const select = byId(id);
+      unique(values).forEach((value) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.append(option);
+      });
+    }
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
+    function pillList(values, neutral = false) {
+      return `<div class="tag-list">${values.map((value) => `<span class="tag${neutral ? " neutral" : ""}">${escapeHtml(value)}</span>`).join("")}</div>`;
+    }
+    function matches(project) {
+      const value = (id) => byId(id).value.trim().toLowerCase();
+      const search = value("search");
+      const haystack = [
+        project.name, project.description, project.importance, project.countriesText,
+        project.mechanismText, project.typesText, project.status,
+        project.organizations.map((item) => `${item.name} ${item.type} ${item.role}`).join(" "),
+        project.links.map((item) => `${item.title} ${item.publisher}`).join(" ")
+      ].join(" ").toLowerCase();
+      return (!search || haystack.includes(search))
+        && (!value("year-filter") || String(project.year) === value("year-filter"))
+        && (!value("region-filter") || project.regions.some((item) => item.toLowerCase() === value("region-filter")))
+        && (!value("mechanism-filter") || project.mechanisms.some((item) => item.toLowerCase() === value("mechanism-filter")))
+        && (!value("type-filter") || project.types.some((item) => item.toLowerCase() === value("type-filter")))
+        && (!value("status-filter") || project.status.toLowerCase() === value("status-filter"))
+        && (!value("country-filter") || project.countries.some((item) => item.toLowerCase() === value("country-filter")) || project.countryDisclosure.toLowerCase() === value("country-filter"))
+        && (!value("country-group-filter") || project.countryGroup.toLowerCase() === value("country-group-filter"))
+        && (!value("organization-filter") || project.organizations.some((item) => item.name.toLowerCase() === value("organization-filter")))
+        && (!value("organization-type-filter") || project.organizations.some((item) => item.type.toLowerCase() === value("organization-type-filter")))
+        && (!value("organization-role-filter") || project.organizations.some((item) => item.role.toLowerCase() === value("organization-role-filter")))
+        && (!value("membership-status-filter") || project.membershipStatus.toLowerCase() === value("membership-status-filter"))
+        && (!value("review-status-filter") || project.editorialStatus.toLowerCase() === value("review-status-filter"))
+        && (!value("source-publisher-filter") || project.links.some((item) => item.publisher.toLowerCase() === value("source-publisher-filter")))
+        && (!value("reach-filter") || project.reachDisclosure.toLowerCase() === value("reach-filter"))
+        && (!value("amount-filter") || project.amountDisclosure.toLowerCase() === value("amount-filter"));
+    }
+    function sortValue(project, key) {
+      if (key === "orgNames") return project.organizations.map((item) => item.name).join(", ");
+      if (key === "orgTypes") return project.organizations.map((item) => item.type).join(", ");
+      if (key === "orgRoles") return project.organizations.map((item) => item.role).join(", ");
+      if (key === "sourcePublishers") return project.links.map((item) => item.publisher).join(", ");
+      return project[key];
+    }
+    function compareProjects(a, b) {
+      const left = sortValue(a, sortKey);
+      const right = sortValue(b, sortKey);
+      const leftMissing = left === null || left === undefined || left === "";
+      const rightMissing = right === null || right === undefined || right === "";
+      if (leftMissing || rightMissing) return leftMissing === rightMissing ? 0 : leftMissing ? 1 : -1;
+      if (sortKey === "amountSort" || sortKey === "reachSort") {
+        const leftGroup = sortKey === "amountSort"
+          ? `${a.amountCurrency || "unknown currency"} | ${a.amountConcept}`
+          : `${a.reachUnit || "unknown unit"} | ${a.reachEvidence || "unknown evidence type"}`;
+        const rightGroup = sortKey === "amountSort"
+          ? `${b.amountCurrency || "unknown currency"} | ${b.amountConcept}`
+          : `${b.reachUnit || "unknown unit"} | ${b.reachEvidence || "unknown evidence type"}`;
+        const groupOrder = leftGroup.localeCompare(rightGroup);
+        if (groupOrder !== 0) return sortDirection === "asc" ? groupOrder : -groupOrder;
+      }
+      const compared = typeof left === "number" && typeof right === "number"
+        ? left - right
+        : String(left).localeCompare(String(right));
+      return sortDirection === "asc" ? compared : -compared;
+    }
+    function render() {
+      visibleProjects = projects.filter(matches).sort(compareProjects);
+      byId("project-rows").innerHTML = visibleProjects.map((project) => `
+        <tr class="project-row" tabindex="0" data-project="${escapeHtml(project.id)}" aria-label="Open ${escapeHtml(project.name)} details">
+          <td>${escapeHtml(project.year)}</td>
+          <td><span class="project-name">${escapeHtml(project.name)}</span><span class="project-sub">${escapeHtml(project.recordType || "Financing initiative")} · verified ${escapeHtml(project.lastVerified)}</span></td>
+          <td><span class="project-name">${escapeHtml(project.countriesText)}</span><span class="project-sub">${escapeHtml(project.regions.join(", "))} · ${escapeHtml(project.sidsEligibility)}</span></td>
+          <td>${pillList([project.countryGroup], true)}<span class="project-sub">${escapeHtml(project.countryGroupText)}</span></td>
+          <td><span class="project-name">${escapeHtml(project.organizations.map((item) => item.name).join(", "))}</span><span class="project-sub">${escapeHtml(unique(project.organizations.map((item) => item.type)).join(", "))}</span></td>
+          <td>${pillList(project.mechanisms)}</td>
+          <td>${pillList(project.types.slice(0, 3))}${project.types.length > 3 ? `<span class="project-sub">+${project.types.length - 3} more</span>` : ""}</td>
+          <td><span class="tag status">${escapeHtml(project.status)}</span><span class="project-sub">${escapeHtml(project.statusDetail)}</span></td>
+          <td><span class="amount">${escapeHtml(project.amountDisplay)}</span><small class="project-sub">${escapeHtml(project.amountConcept)}</small></td>
+          <td><span class="reach">${escapeHtml(project.reachDisclosure)}</span><small>${escapeHtml(project.reachSummary)}</small></td>
+        </tr>`).join("");
+      byId("empty-state").hidden = visibleProjects.length > 0;
+      byId("result-count").textContent = `Showing ${visibleProjects.length} of ${projects.length} pilot ${projects.length === 1 ? "record" : "records"} · Select a row for evidence and source links`;
+      byId("metric-count").textContent = visibleProjects.length;
+      byId("metric-regions").textContent = unique(visibleProjects.flatMap((project) => project.regions)).length;
+      byId("metric-amounts").textContent = visibleProjects.filter((project) => project.amountSort !== null).length;
+      byId("metric-reach").textContent = visibleProjects.filter((project) => project.reachDisclosure === "Not disclosed").length;
+      renderMechanisms();
+    }
+    function renderMechanisms() {
+      const counts = new Map();
+      const dimension = byId("summary-filter").value;
+      visibleProjects.forEach((project) => {
+        let values = project[dimension];
+        if (dimension === "organizations") values = project.organizations.map((item) => item.name);
+        if (dimension === "organizationTypes") values = project.organizations.map((item) => item.type);
+        if (dimension === "organizationRoles") values = project.organizations.map((item) => item.role);
+        if (dimension === "sourcePublishers") values = project.links.map((item) => item.publisher);
+        if (dimension === "membershipStatus" || dimension === "editorialStatus") values = [project[dimension]];
+        if (dimension === "countryGroup") values = [project.countryGroup];
+        if (dimension === "regions" || dimension === "mechanisms" || dimension === "types") values = project[dimension];
+        if (!Array.isArray(values)) values = [values ?? "Not disclosed"];
+        unique(values.map(String)).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+      });
+      const rows = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+      const max = Math.max(1, ...rows.map((row) => row[1]));
+      byId("mechanism-bars").innerHTML = rows.length
+        ? rows.map(([name, value]) => `<div class="bar-row"><span class="bar-label">${escapeHtml(name)}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(5, value / max * 100)}%"></div></div><span class="bar-value">${value}</span></div>`).join("")
+        : `<div class="empty">No mechanism records in this view.</div>`;
+    }
+    function detailItem(label, value, wide = false) {
+      return `<section class="detail-item${wide ? " wide" : ""}"><div class="detail-label">${escapeHtml(label)}</div><div class="detail-value">${escapeHtml(value || "Not disclosed")}</div></section>`;
+    }
+    function openDetails(project) {
+      const links = project.links.map((link) => `<li><a href="${escapeHtml(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.title)} ↗</a><small>${escapeHtml(link.publisher)} · ${escapeHtml(link.date || "Publication date not stated")} · Supports: ${escapeHtml(link.supports)}</small></li>`).join("");
+      byId("detail-content").innerHTML = `
+        <header class="detail-head"><div><div class="eyebrow">${escapeHtml(project.year)} · ${escapeHtml(project.regions.join(", "))} · ${escapeHtml(project.editorialStatus)}</div><h2 id="detail-title">${escapeHtml(project.name)}</h2><p>${escapeHtml(project.status)} · ${escapeHtml(project.membershipBasis)}</p></div><button class="close" type="button" aria-label="Close details">×</button></header>
+        <div class="detail-body">
+          <div class="detail-tags">${project.mechanisms.concat(project.types).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
+          <div class="detail-grid">
+            ${detailItem("Project description", project.description, true)}
+            ${detailItem("Why it matters", project.importance, true)}
+            ${detailItem("Financing mechanism", project.mechanismText)}
+            ${detailItem("Finance amount and concept", `${project.amountDisplay}. ${project.amountConcept}`)}
+            ${detailItem("Funding timing and stage", `${project.timing} ${project.statusDetail}`)}
+            ${detailItem("Climate risk link", project.riskLink.join(", "))}
+            ${detailItem("SIDS eligibility / country roles", `${project.sidsEligibility}\n${project.countriesInvolved}`, true)}
+            ${detailItem("Country-level coverage count", project.supportedMemberCount ? `${project.supportedMemberCount} ${project.supportedMemberUnit}. This is not an individual/community reach count.` : "Not disclosed")}
+            ${detailItem("MDBs, funds, and other organizations", project.organizations.map((organization) => `${organization.name} (${organization.type}) — ${organization.role}`).join("\n"), true)}
+            ${detailItem("Community / individual reach", `${project.reachSummary}\nEvidence classification: ${project.reachEvidence}`, true)}
+            ${detailItem("Verification", `Last checked: ${project.lastVerified}. Editorial status: ${project.editorialStatus}.`, true)}
+            <section class="detail-item wide"><div class="detail-label">Top relevant links</div><ol class="source-list">${links}</ol></section>
+          </div>
+          <div class="detail-caveat"><strong>Evidence note:</strong> ${escapeHtml(project.caveat)}</div>
+        </div>`;
+      byId("detail-dialog").showModal();
+      byId("detail-content").querySelector(".close").addEventListener("click", () => byId("detail-dialog").close());
+    }
+    function csvCell(value) {
+      let text = Array.isArray(value) ? value.join("; ") : String(value ?? "");
+      if (/^\s*[=+\-@]/.test(text)) text = `'${text}`;
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    function exportCsv() {
+      const rows = visibleProjects.map((project) => [
+        project.id, project.name, project.year, project.qualifyingEvent, project.regions, project.countriesText,
+        project.membershipBasis, project.membershipStatus, project.sidsEligibility, project.countryRolesText,
+        project.countryGroup, project.countryGroupText, project.countryGroupMethod, project.mechanisms,
+        project.types, project.status, project.statusDetail, project.amountDisplay,
+        project.amountCurrency, project.amountConcept, project.timing,
+        project.organizations.map((item) => `${item.name} (${item.type}) — ${item.role}`).join(" | "),
+        project.description, project.importance, project.riskLink, project.reachDisclosure, project.reachSummary,
+        project.reachEvidence, project.supportedMemberCount, project.supportedMemberUnit, project.links.map((item) => `${item.title}: ${item.url}`).join(" | "),
+        project.sourcePublishers, project.links.map((item) => item.date || "Not stated").join(" | "),
+        project.lastVerified, project.editorialStatus, project.caveat
+      ]);
+      const csv = [csvHeaders, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+      downloadBlob(new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" }), "sids-climate-risk-finance-filtered.csv");
+    }
+    function exportCodebook() {
+      const codebook = {
+        title: "SIDS Climate-Disaster Risk Finance Tracker — CSV Codebook",
+        version: "0.1",
+        coverage_start: "2020-01-01",
+        source_of_sids_membership_and_regions: "UN-OHRLLS",
+        notes: [
+          "This export is a research prototype; records may be candidates pending SIDS eligibility review.",
+          "Not disclosed is not zero. Amount concepts, currencies, funding stages, and reach units are not interchangeable.",
+          "Country grouping must identify its framework/version; unverified classifications remain Not classified.",
+          "The specification document in the repository contains the full model, taxonomies, and inclusion rules."
+        ],
+        fields: csvHeaders.map((name) => ({ name, description: fieldDescriptions[name] })),
+        conventions: {
+          missing_values: ["Not disclosed", "Not applicable", "Unknown", "Conflicting sources"],
+          amount_sorting: "Amounts sort only within reported currency and amount concept groups.",
+          reach_sorting: "Reach sorts only within unit and evidence-type groups.",
+          summaries: "Dashboard summaries count records by category; they do not total incomparable amounts or reach."
+        }
+      };
+      downloadBlob(new Blob([JSON.stringify(codebook, null, 2)], { type: "application/json;charset=utf-8" }), "sids-climate-risk-finance-codebook.json");
+    }
+
+    addOptions("year-filter", projects.map((project) => String(project.year)));
+    addOptions("region-filter", projects.flatMap((project) => project.regions));
+    addOptions("mechanism-filter", projects.flatMap((project) => project.mechanisms));
+    addOptions("type-filter", projects.flatMap((project) => project.types));
+    addOptions("status-filter", projects.map((project) => project.status));
+    addOptions("country-filter", projects.flatMap((project) => project.countries.length ? project.countries : [project.countryDisclosure]));
+    addOptions("country-group-filter", projects.map((project) => project.countryGroup));
+    addOptions("organization-filter", projects.flatMap((project) => project.organizations.map((item) => item.name)));
+    addOptions("organization-type-filter", projects.flatMap((project) => project.organizations.map((item) => item.type)));
+    addOptions("organization-role-filter", projects.flatMap((project) => project.organizations.map((item) => item.role)));
+    addOptions("membership-status-filter", projects.map((project) => project.membershipStatus));
+    addOptions("review-status-filter", projects.map((project) => project.editorialStatus));
+    addOptions("source-publisher-filter", projects.flatMap((project) => project.links.map((item) => item.publisher)));
+    addOptions("reach-filter", projects.map((project) => project.reachDisclosure));
+    addOptions("amount-filter", projects.map((project) => project.amountDisclosure));
+    controls.forEach((control) => {
+      control.addEventListener("input", render);
+      control.addEventListener("change", render);
+    });
+    byId("sort-filter").addEventListener("change", () => {
+      sortKey = byId("sort-filter").value;
+      render();
+    });
+    byId("summary-filter").addEventListener("change", renderMechanisms);
+    byId("direction-button").addEventListener("click", () => {
+      sortDirection = sortDirection === "asc" ? "desc" : "asc";
+      byId("direction-button").textContent = sortDirection === "asc" ? "↑" : "↓";
+      render();
+    });
+    document.querySelectorAll("th button[data-sort]").forEach((button) => button.addEventListener("click", () => {
+      const nextKey = button.dataset.sort;
+      sortDirection = sortKey === nextKey && sortDirection === "asc" ? "desc" : "asc";
+      sortKey = nextKey;
+      byId("sort-filter").value = sortKey;
+      byId("direction-button").textContent = sortDirection === "asc" ? "↑" : "↓";
+      render();
+    }));
+    byId("project-rows").addEventListener("click", (event) => {
+      const row = event.target.closest("[data-project]");
+      if (row) openDetails(projects.find((project) => project.id === row.dataset.project));
+    });
+    byId("project-rows").addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const row = event.target.closest("[data-project]");
+      if (row) {
+        event.preventDefault();
+        openDetails(projects.find((project) => project.id === row.dataset.project));
+      }
+    });
+    byId("detail-dialog").addEventListener("click", (event) => {
+      if (event.target === byId("detail-dialog")) byId("detail-dialog").close();
+    });
+    byId("reset-button").addEventListener("click", () => {
+      controls.forEach((control) => { control.value = ""; });
+      render();
+    });
+    byId("export-button").addEventListener("click", exportCsv);
+    byId("codebook-button").addEventListener("click", exportCodebook);
+    render();
+  </script>
+</body>
+</html>
